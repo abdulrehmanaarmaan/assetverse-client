@@ -35,7 +35,7 @@ const UpgradeSuccess = () => {
             <div className="min-h-[60vh] flex items-center justify-center px-4">
                 <div className="max-w-md w-full bg-white border border-gray-300 rounded-2xl shadow-sm p-6 text-center">
 
-                    <CheckCircl className="mx-auto text-green-500 w-14 h-14 mb-4" />
+                    <CheckCircle className="mx-auto text-green-500 w-14 h-14 mb-4" />
 
                     <h1 className="text-2xl font-semibold text-gray-800">
                         Payment Successful
@@ -53,20 +53,20 @@ const UpgradeSuccess = () => {
                         {/* <p> */}
                         {/* <span className="font-medium">Tracking ID:</span>{' '} */}
                         {/* {paymentInfo?.trackingId} */}
-                        {/* </p> */}
+                        {/* </p> */
                     </div>
 
-                    <div className="mt-6 flex gap-3 justify-center">
-                        <Link
-                            to="/dashboard/asset-list"
-                            className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-400 font-semibold"
-                        >
-                            Go to Dashboard
-                        </Link>
-                    </div>
+                <div className="mt-6 flex gap-3 justify-center">
+                    <Link
+                        to="/dashboard/asset-list"
+                        className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-400 font-semibold"
+                    >
+                        Go to Dashboard
+                    </Link>
                 </div>
             </div>
         </div>
+        </div >
     );
 };
 
