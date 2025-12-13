@@ -9,7 +9,7 @@ import useAxiosPublic from '../hooks/UseAxios';
 import toast from 'react-hot-toast';
 
 const Registration = () => {
-    const { register, handleSubmit, formState: { errors }, reset } = useForm();
+    const { register, handleSubmit, formState: { errors }, reset } = useFor();
 
     const { signup, updateUserInfo, user, setUser } = use(AuthContext)
 
