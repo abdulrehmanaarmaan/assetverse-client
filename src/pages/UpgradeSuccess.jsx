@@ -11,7 +11,7 @@ const UpgradeSuccess = () => {
     const sessionId = searchParams?.get('session_id')
 
     console.log(sessionId)
-    // const axiosInstanceSecure = useAxiosSecure();
+    const axiosInstanceSecure = useAxiosSecure();
 
     const axiosInstance = useAxios()
 
