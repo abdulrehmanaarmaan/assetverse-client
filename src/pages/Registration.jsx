@@ -286,7 +286,7 @@ const Registration = () => {
                                     </div>
                                     <div>
                                         <label className="label mb-1">Role</label>
-                                        <input type="text" className="input rounded-lg" placeholder="Role" {...register('role')} readOnly />
+                                        <input type="text" className="input rounded-lg cursor-not-allowed" placeholder="Role" {...register('role')} readOnly />
                                     </div>
                                     <div>
                                         <label className="label mb-1">Package Limit</label>

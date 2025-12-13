@@ -75,7 +75,7 @@ const Analytics = () => {
 
                         <div className="w-full h-72 flex justify-center items-center">
                             {assetsPerHr.length > 0 ? <ResponsiveContainer>
-                                <PieChar>
+                                <PieChart>
                                     <Pie
                                         data={getPieChartData(assetsPerHr)}
                                         dataKey="value"
