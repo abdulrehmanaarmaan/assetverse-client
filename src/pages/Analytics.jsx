@@ -3,7 +3,7 @@ import { BarChart3, PieChart as PieIcon } from 'lucide-react';
 import React, { use } from 'react';
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import useAxiosSecure from '../hooks/UseAxiosSecure';
-// import useUserInfo from '../hooks/UseUserInfo';
+import useUserInfo from '../hooks/UseUserInfo';
 import { AuthContext } from '../contexts/AuthContext';
 
 const Analytics = () => {
