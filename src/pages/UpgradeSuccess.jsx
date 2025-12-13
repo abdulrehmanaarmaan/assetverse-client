@@ -53,19 +53,19 @@ const UpgradeSuccess = () => {
                         {/* <p> */}
                         {/* <span className="font-medium">Tracking ID:</span>{' '} */}
                         {/* {paymentInfo?.trackingId} */}
-                        {/* </p> */
+                        {/* </p> */}
                     </div>
 
-                <div className="mt-6 flex gap-3 justify-center">
-                    <Link
-                        to="/dashboard/asset-list"
-                        className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-400 font-semibold"
-                    >
-                        Go to Dashboard
-                    </Link>
+                    <div className="mt-6 flex gap-3 justify-center">
+                        <Link
+                            to="/dashboard/asset-list"
+                            className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-400 font-semibold"
+                        >
+                            Go to Dashboard
+                        </Link>
+                    </div>
                 </div>
             </div>
-        </div>
         </div >
     );
 };
