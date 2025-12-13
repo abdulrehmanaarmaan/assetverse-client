@@ -156,7 +156,7 @@ const Profile = () => {
         }
     })
 
-    if (loader) return <Loader></Loader>;
+    if (loader) return <Loader />
 
     return (
         <div className='px-5'>
