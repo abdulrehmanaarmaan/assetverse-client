@@ -81,13 +81,13 @@ const RequestAsset = () => {
     return (
         <div>
             <h1 className='text-3xl font-semibold text-gray-800 tracking-tight text-center mb-6'>Request an Asset</h1>
-            {assetsMoreThanZero.length > 0 ? < p className='text-2xl font-bold mb-6 text-center text-gray-600'>Choose an available request and submit an asset</p>
-                : < h1 className='text-2xl font-bold mb-6 text-center text-gray-600'>No assets added yet</h1>}
-            <div className='grid grid-cols-3 gap-6 max-w-[1300px] mx-auto px-4'>
+            {assetsMoreThanZero.length > 0 ? < p className='text-2xl font-bold mb-6 text-center text-gray-600 px-4'>Choose an available request and submit an asset</p>
+                : < h1 className='text-2xl font-bold mb-6 text-center text-gray-600 px-4'>No assets added yet</h1>}
+            <div className='grid lg:grid-cols-3 md:grid-cols-2 gap-6 max-w-[1300px] mx-auto px-4 md:px-6 lg:px-8'>
                 {isLoading ? <Loader></Loader> :
                     assetsMoreThanZero.map(asset =>
                         <div key={asset?._id} className='card bg-base-100 shadow-lg border border-gray-200'>
-                            <figure>
+                            <figure className='overflow-hidden rounded-t-xl'>
                                 <img src={asset?.productImage} alt={asset?.productName} className='h-40 object-cover w-full' />
                             </figure>
                             <div className='card-body text-center justify-center'>

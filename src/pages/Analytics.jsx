@@ -60,68 +60,71 @@ const Analytics = () => {
 
     return (
         <div>
-            <div className="p-6">
+            <div className="">
                 <h1 className="text-3xl font-semibold text-gray-800 tracking-tight text-center mb-6">Analytics Dashboard</h1>
 
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                    {/* Pie Chart Section */}
-                    <div className="bg-white p-6 rounded-2xl shadow-sm">
-                        <div className="flex items-center gap-2 mb-4">
-                            <PieIcon className="w-5 h-5 text-gray-600" />
-                            <h2 className="text-lg font-semibold">
-                                Returnable vs Non-returnable Items
-                            </h2>
+                <div className='px-4 md:px-6 lg:px-8'>
+
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                        {/* Pie Chart Section */}
+                        <div className="bg-white p-6 rounded-2xl shadow-sm">
+                            <div className="flex items-center gap-2 mb-4">
+                                <PieIcon className="w-5 h-5 text-gray-600" />
+                                <h2 className="text-lg font-semibold">
+                                    Returnable vs Non-returnable Items
+                                </h2>
+                            </div>
+
+                            <div className="w-full h-72 flex justify-center items-center">
+                                {assetsPerHr.length > 0 ? <ResponsiveContainer>
+                                    <PieChart>
+                                        <Pie
+                                            data={getPieChartData(assetsPerHr)}
+                                            dataKey="value"
+                                            nameKey="name"
+                                            cx="50%"
+                                            cy="50%"
+                                            outerRadius={100}
+                                            label
+                                        >
+
+                                            <Cell key='Returnable' fill='#4fa94d' />
+                                            <Cell key='Non-returnable' fill='#f87171' />
+
+                                        </Pie>
+                                        <Tooltip />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                                    :
+                                    <p className='text-gray-500 text-sm'>No assets added yet</p>}
+                            </div>
                         </div>
 
-                        <div className="w-full h-72 flex justify-center items-center">
-                            {assetsPerHr.length > 0 ? <ResponsiveContainer>
-                                <PieChart>
-                                    <Pie
-                                        data={getPieChartData(assetsPerHr)}
-                                        dataKey="value"
-                                        nameKey="name"
-                                        cx="50%"
-                                        cy="50%"
-                                        outerRadius={100}
-                                        label
-                                    >
+                        {/* Bar Chart Section */}
+                        <div className="bg-white p-6 rounded-2xl shadow-sm">
+                            <div className="flex items-center gap-2 mb-4">
+                                <BarChart3 className="w-5 h-5 text-gray-600" />
+                                <h2 className="text-lg font-semibold">Top 5 Most Requested Assets</h2>
+                            </div>
 
-                                        <Cell key='Returnable' fill='#4fa94d' />
-                                        <Cell key='Non-returnable' fill='#f87171' />
-
-                                    </Pie>
-                                    <Tooltip />
-                                </PieChart>
-                            </ResponsiveContainer>
-                                :
-                                <p className='text-gray-500 text-sm'>No assets added yet</p>}
-                        </div>
-                    </div>
-
-                    {/* Bar Chart Section */}
-                    <div className="bg-white p-6 rounded-2xl shadow-sm">
-                        <div className="flex items-center gap-2 mb-4">
-                            <BarChart3 className="w-5 h-5 text-gray-600" />
-                            <h2 className="text-lg font-semibold">Top 5 Most Requested Assets</h2>
-                        </div>
-
-                        <div className="w-full h-72 flex justify-center items-center">
-                            {top5.length > 0 ? <ResponsiveContainer>
-                                <BarChart data={getBarChartData(top5)}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Bar dataKey="requests" fill="#4fa94d" />
-                                </BarChart>
-                            </ResponsiveContainer>
-                                : <p className='text-gray-500 text-sm'>No assets requested yet</p>}
+                            <div className="w-full h-72 flex justify-center items-center">
+                                {top5.length > 0 ? <ResponsiveContainer>
+                                    <BarChart data={getBarChartData(top5)}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Bar dataKey="requests" fill="#4fa94d" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                                    : <p className='text-gray-500 text-sm'>No assets requested yet</p>}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-        </div>
+        </div >
     );
 };
 

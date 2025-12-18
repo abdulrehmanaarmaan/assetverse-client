@@ -1,58 +1,52 @@
 import { BarChart2, CheckCircle, Layers, Shield, Users, Zap } from 'lucide-react';
-import useAxiosSecure from '../hooks/UseAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import useUserInfo from '../hooks/UseUserInfo';
-import { use } from 'react';
+import { use, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-// import useLoader from '../hooks/UseLoader';
 import Loader from '../components/Loader';
+import { useNavigate } from 'react-router';
+import useAxios from '../hooks/UseAxios';
 
 const Home = () => {
 
-    const axiosInstanceSecure = useAxiosSecure()
+    const axiosInstance = useAxios()
 
     const { data: pkgs = [], isLoading } = useQuery({
         queryKey: ['packages'],
         queryFn: async () => {
-            const result = await axiosInstanceSecure.get(`/packages`)
+            const result = await axiosInstance.get(`/packages`)
             return result?.data
         }
     })
 
     const { user } = use(AuthContext)
 
-    const { role, email } = useUserInfo()
+    const { role } = useUserInfo()
 
-    // const { loader, startLoading, stopLoading } = useLoader()
+    const navigate = useNavigate()
 
-    const handlePayment = pkg => {
+    const handlePayment = () => {
         if (!user || role !== 'hr') {
             document.getElementById('my_modal_5').showModal()
         }
 
         else {
-            const payment = {
-                hrEmail: email,
-                packageName: pkg?.name,
-                employeeLimit: Number(pkg?.employeeLimit),
-                amount: Number(pkg?.price),
-                paymentDate: new Date(),
-                status: 'pending'
-            }
+            navigate('/dashboard/upgrade-package')
+        }
+    }
 
-            console.log(payment)
+    const handleGetStarted = () => {
+        if (!user) {
+            navigate('/login')
+        }
 
-            axiosInstanceSecure.post('/create-checkout-session', payment)
-                .then(res => {
-                    console.log(res)
-                    // stopLoading()
-                    window.location.href = res?.data?.url
-                })
-                .catch(err => {
-                    console.log(err)
-                    // stopLoading()
-                })
+        if (role === 'hr') {
+            navigate('/dashboard/asset-list')
+        }
+
+        if (role === 'employee') {
+            navigate('/dashboard/request-asset')
         }
     }
 
@@ -82,7 +76,7 @@ const Home = () => {
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.6 }}
                         className="mt-6 px-8 py-3 bg-blue-500 hover:bg-blue-400 text-white rounded-lg shadow-md cursor-pointer font-semibold"
-                    >
+                        onClick={handleGetStarted}>
                         Get Started
                     </motion.button>
                 </section>
@@ -116,21 +110,24 @@ const Home = () => {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.2 }}
-                            className="p-8 border rounded-xl shadow-sm hover:shadow-md transition bg-white border-gray-300"
+                            className="p-8 border rounded-xl shadow-sm hover:shadow-md transition bg-white border-gray-300 flex flex-col"
                         >
                             <h3 className="text-xl font-bold text-center">{pkg.name}</h3>
-                            <p className="mt-1 text-center text-gray-600">{pkg.employeeLimit} Employees</p>
+                            <p className="mt-1 text-center text-gray-600">{pkg?.name === 'Basic' ? 5 : pkg?.name === 'Standard' ? 10 : 20} Employees</p>
                             <p className="text-4xl font-bold text-center mt-4">${pkg.price}<span className="text-sm">/month</span></p>
-                            <ul className="mt-6 space-y-3">
+                            <ul className="mt-6 space-y-3 mb-6">
                                 {pkg.features.map((f, i) => (
                                     <li key={i} className="flex items-center gap-2 text-gray-700">
                                         <CheckCircle className="h-5 w-5 text-green-600" /> {f}
                                     </li>
                                 ))}
                             </ul>
-                            <button className="mt-6 w-full py-2 bg-blue-500 hover:bg-blue-400 text-white rounded-lg font-semibold hover:cursor-pointer" onClick={() => handlePayment(pkg)}>
-                                Get Started
-                            </button>
+
+                            <div className='mt-auto'>
+                                <button className="w-full py-2 bg-blue-500 hover:bg-blue-400 text-white rounded-lg font-semibold hover:cursor-pointer" onClick={handlePayment}>
+                                    Get Started
+                                </button>
+                            </div>
 
                             <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
                                 <div className="modal-box">
@@ -160,7 +157,7 @@ const Home = () => {
                             { icon: CheckCircle, title: "Auto Tracking", desc: "Asset assignment & return tracking made easy." },
                         ].map((feature, i) => (
                             <div key={i} className="p-6 bg-white rounded-xl border shadow-sm border-gray-300">
-                                <motion.icon className="h-10 w-10 text-blue-600 mb-4" />
+                                <feature.icon className="h-10 w-10 text-blue-600 mb-4" />
                                 <h3 className="font-semibold text-lg mb-1">{feature.title}</h3>
                                 <p className="text-gray-600 text-sm">{feature.desc}</p>
                             </div>
@@ -220,9 +217,9 @@ const Home = () => {
                 <section className="py-20 px-6 text-center bg-blue-600 text-white">
                     <h2 className="text-3xl font-semibold tracking-tight mb-6 text-center">Ready to Modernize Your Workflow?</h2>
                     <p className="mb-6">Let AssetVerse streamline your assets and team management today.</p>
-                    <button className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-200">
-                        Contact Us
-                    </button>
+                    {/* <button className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-200"> */}
+                    {/* Contact Us */}
+                    {/* </button> */}
                 </section>
             </div >
         </div >

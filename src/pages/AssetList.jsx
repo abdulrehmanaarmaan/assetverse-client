@@ -74,13 +74,14 @@ const AssetList = () => {
 
         let allInfo = {};
 
-        if (productImage) {
+        if (productImage && productImage?.length > 0) {
             const productImg = productImage[0]
 
             const form = new FormData()
             form.append('image', productImg)
+            console.log(form)
 
-            const image_API_URL = `https://api.imgbb.com/1/upload?expiration=600&key=${import.meta.env.VITE_image_host_key}`;
+            const image_API_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host_key}`;
 
             axios.post(image_API_URL, form)
                 .then(res => {
@@ -125,9 +126,11 @@ const AssetList = () => {
                 productQuantity: data?.productQuantity,
                 productType: data?.productType,
             }
+            console.log('all info', allInfo)
 
             axiosInstanceSecure.patch(`/assets?id=${id}`, { ...allInfo, availableQuantity: allInfo?.productQuantity })
                 .then(res => {
+                    console.log(res?.data)
                     if (res?.data?.modifiedCount !== 0) {
                         refetch()
                         stopLoading()
@@ -163,14 +166,16 @@ const AssetList = () => {
             })
     }
 
+    console.log(allAssets)
+
     if (loader) return <Loader></Loader>
 
     return (
         <div>
             <h1 className='text-3xl font-semibold text-gray-800 tracking-tight text-center mb-6'>Asset List</h1>
-            {allAssets?.length ? <p className='text-2xl font-bold mb-6 text-center text-gray-600'>Page: {pagination?.page} of {pagination?.totalPages}</p>
+            {allAssets?.length > 0 ? <p className='text-2xl font-bold mb-6 text-center text-gray-600'>Page: {pagination?.page} of {pagination?.totalPages}</p>
                 : <p className='text-2xl font-bold mb-6 text-center text-gray-600'>No assets added yet</p>}
-            <div className="shadow-sm">
+            <div className="shadow-sm overflow-x-auto">
                 {allAssets.length > 0 && <table className="table text-center border-t border-gray-300 rounded-none">
                     {/* head */}
                     <thead className='bg-gray-100 text-gray-600'>
@@ -195,12 +200,14 @@ const AssetList = () => {
                                     <img
                                         src={asset?.productImage}
                                         alt="Product Image"
-                                        className="mask mask-squircle h-12 w-12" />
+                                        className="mask mask-squircle h-12 w-12"
+                                        referrerPolicy='no-referrer' />
                                 </td>
 
                                 <td className='font-medium'>{asset?.productName}</td>
 
-                                <td className={`badge text-[12px] font-semibold ${asset?.productType === 'Returnable' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{asset?.productType}</td>
+                                <td className='min-w-[120px]'><span className={`badge text-[12px] font-semibold whitespace-nowrap ${asset?.productType === 'Returnable' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{asset?.productType}</span>
+                                </td>
 
                                 <td>
                                     <button className="">{asset?.productQuantity}</button>
@@ -209,6 +216,7 @@ const AssetList = () => {
                                 <td className='text-gray-600'>{new Date(asset?.dateAdded).toLocaleDateString()}</td>
 
                                 <td className='flex gap-3 justify-center items-center py-6'>
+
                                     <button className="btn btn-sm btn-outline btn-info" onClick={() => {
                                         setSelectedAsset(asset)
 
@@ -227,12 +235,12 @@ const AssetList = () => {
                                     {/* Open the modal using document.getElementById('ID').showModal() method */}
                                     <dialog id={`modal_edit_${asset?._id}`} className="modal modal-bottom sm:modal-middle">
                                         {/* if there is a button in form, it will close the modal */}
-                                        <div className="hero-content modal-box max-h-fit bg-linear-to-b from-gray-50 to-gray-200">
-                                            <div className='modal-action flex-col'>
+                                        <div className="modal-box bg-linear-to-b from-gray-50 to-gray-200 overflow-y-auto px-4 rounded-none md:rounded-lg max-h-[90vh]">
+                                            <div className='modal-action flex-col mt-0'>
                                                 <div>
                                                     <h1 className='text-2xl font-bold text-center mb-4'>Update Asset Info: {selectedAsset?.productName}</h1>
                                                 </div>
-                                                <div className="card bg-base-100 w-full shrink-0 border border-gray-300">
+                                                <div className="card bg-base-100 w-fit shrink-0 border border-gray-300 mx-auto">
                                                     <div className="card-body">
                                                         <form onSubmit={handleSubmit(data => handleEditAsset(data, asset?._id))} method="dialog">
                                                             <fieldset className="fieldset grid-cols-1 gap-4 text-left">

@@ -10,19 +10,25 @@ const AllRequests = () => {
 
     const axiosInstanceSecure = useAxiosSecure()
 
-    const { email } = useUserInfo();
+    const { email, companyLogo } = useUserInfo();
 
-    const { data: requests = [], refetch, isLoading } = useQuery({
-        queryKey: ['requests'],
+    const { data: requestsPerHR = [], refetch, isLoading } = useQuery({
+        queryKey: ['requests', email],
+        enabled: !!email,
         queryFn: async () => {
             const result = await axiosInstanceSecure.get(`/requests?hrEmail=${email}`);
             return result?.data
         }
     })
 
+    console.log(requestsPerHR)
+
+    const unreturnedRequests = requestsPerHR.filter(request => request?.requestStatus !== 'returned')
+
     const { loader, startLoading, stopLoading } = useLoader()
 
     const handleApproveRequest = (id, request) => {
+        console.log(id)
         startLoading()
 
         axiosInstanceSecure.patch(`/assets/${id}`)
@@ -34,7 +40,7 @@ const AllRequests = () => {
                     approvalDate: new Date()
                 }
 
-                axiosInstanceSecure.patch(`/requests?id=${id}`, updatedStatus)
+                axiosInstanceSecure.patch(`/requests?id=${request?._id}`, updatedStatus)
                     .then(res => {
                         refetch()
 
@@ -67,38 +73,28 @@ const AllRequests = () => {
                                         stopLoading()
                                     })
 
-                                axiosInstanceSecure.get(`/users/${res?.data?.hrEmail}`)
+                                const affiliation = {
+                                    employeeEmail: request?.requesterEmail,
+                                    employeeName: request?.requesterName,
+                                    hrEmail: request?.hrEmail,
+                                    companyName: request?.companyName,
+                                    companyLogo: companyLogo,
+                                    affiliationDate: new Date(),
+                                    status: "inactive"
+                                }
+
+                                axiosInstanceSecure.post('/affiliations', affiliation)
                                     .then(res => {
-                                        console.log(res)
 
-                                        const affiliation = {
-                                            employeeEmail: request?.requesterEmail,
-                                            employeeName: request?.requesterName,
-                                            hrEmail: request?.hrEmail,
-                                            companyName: request?.companyName,
-                                            companyLogo: res?.data?.companyLogo,
-                                            affiliationDate: new Date(),
-                                            status: "inactive"
-                                        }
+                                        console.log(res?.data)
 
-                                        axiosInstanceSecure.post('/affiliations', affiliation)
-                                            .then(res => {
-
-                                                console.log(res?.data)
-
-                                                stopLoading()
-                                                toast.success('Approved successfully')
-                                            })
-                                            .catch(err => {
-                                                console.log(err)
-                                                stopLoading()
-                                                toast.error('Failed to approve')
-                                            })
+                                        stopLoading()
+                                        toast.success('Approved successfully')
                                     })
                                     .catch(err => {
                                         console.log(err)
                                         stopLoading()
-                                        toast.error('Failed to approve')
+                                        toast.success('Approved successfully')
                                     })
                             })
                             .catch(err => {
@@ -147,11 +143,11 @@ const AllRequests = () => {
         <div>
             <h1 className='text-3xl font-semibold text-gray-800 tracking-tight mb-6 text-center'>All Requests</h1>
             {
-                requests.length > 0 ? <p className='text-2xl font-bold mb-6 text-center text-gray-600'>Total Requests: {requests?.length}</p>
+                unreturnedRequests?.length > 0 ? <p className='text-2xl font-bold mb-6 text-center text-gray-600'>Total Requests: {unreturnedRequests?.length}</p>
                     : <p className='text-2xl font-bold mb-6 text-center text-gray-600'>No requests submitted yet</p>
             }
-            <div className="shadow-sm">
-                {requests.length > 0 && <table className="table text-center border-t border-gray-300 rounded-none">
+            <div className="shadow-sm overflow-x-auto">
+                {unreturnedRequests?.length > 0 && <table className="table text-center border-t border-gray-300 rounded-none">
                     {/* head */}
                     <thead className='bg-gray-100 text-gray-600'>
                         <tr>
@@ -167,12 +163,12 @@ const AllRequests = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {isLoading ? <Loader></Loader> : requests.map(request =>
+                        {isLoading ? <Loader></Loader> : unreturnedRequests.map(request =>
                             <tr key={request?._id} className='hover:bg-white'>
                                 <td>
-                                    <span>{request?.requesterName}</span><br />
+                                    <span className='font-medium text-grey-500'>{request?.requesterName}</span><br />
 
-                                    <span>{request?.requesterEmail}</span>
+                                    <span className='text-sm text-gray-500'>{request?.requesterEmail}</span>
                                 </td>
 
                                 <td className='font-medium'>{request?.assetName}</td>
@@ -182,8 +178,8 @@ const AllRequests = () => {
                                 <td><span className={`badge text-[12px] font-semibold ${request?.requestStatus === 'approved' ? 'bg-green-100 text-green-700' : request?.requestStatus === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>{request?.requestStatus}</span></td>
 
                                 <td className='flex gap-3 justify-center items-center py-6'>
-                                    {request?.requestStatus === 'approved' ? <span className='badge text-[12px] font-semibold bg-green-100 text-green-700'>approved</span> :
-                                        request?.requestStatus === 'rejected' ? <span className='badge text-[12px] font-semibold bg-red-100 text-red-700'>rejected</span> :
+                                    {request?.requestStatus === 'approved' ? <span className='badge text-[12px] font-semibold bg-green-100 text-green-700'>Approved</span> :
+                                        request?.requestStatus === 'rejected' ? <span className='badge text-[12px] font-semibold bg-red-100 text-red-700'>Rejected</span> :
                                             <>
                                                 < button className="btn btn-sm btn-success text-white" onClick={() => document.getElementById(`modal_approve_${request?._id}`).showModal()}>Approve</button>
 

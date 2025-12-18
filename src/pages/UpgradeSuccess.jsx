@@ -23,8 +23,8 @@ const UpgradeSuccess = () => {
                 .then(res => {
                     console.log(res)
                     setPaymentInfo({
-                        trackingId: res.data.trackingId,
-                        transactionId: res.data.transactionId
+                        trackingId: res?.data?.trackingId,
+                        transactionId: res?.data?.transactionId
                     })
                 })
         }
@@ -37,7 +37,7 @@ const UpgradeSuccess = () => {
 
                     <CheckCircle className="mx-auto text-green-500 w-14 h-14 mb-4" />
 
-                    <h1 className="text-2xl font-semibold text-gray-800">
+                    <h1 className="text-xl md:text-2xl font-semibold text-gray-800">
                         Payment Successful
                     </h1>
 
@@ -48,7 +48,7 @@ const UpgradeSuccess = () => {
                     <div className="mt-6 text-sm text-gray-500 border-t pt-4 space-y-1">
                         <p>
                             <span className="font-medium">Transaction ID:</span>{' '}
-                            {paymentInfo?.transactionId}
+                            {paymentInfo?.transactionId ? paymentInfo?.transactionId : 'Loading...'}
                         </p>
                         {/* <p> */}
                         {/* <span className="font-medium">Tracking ID:</span>{' '} */}
@@ -59,10 +59,8 @@ const UpgradeSuccess = () => {
                     <div className="mt-6 flex gap-3 justify-center">
                         <Link
                             to="/dashboard/asset-list"
-                            className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-400 font-semibold"
-                        >
-                            Go to Dashboard
-                        </Link>
+                            className="px-5 py-2.5 rounded-lg bg-blue-500 text-white hover:bg-blue-400 font-semibold"
+                        >View Assets</Link>
                     </div>
                 </div>
             </div>

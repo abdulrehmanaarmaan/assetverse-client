@@ -5,6 +5,7 @@ import useLoader from '../hooks/UseLoader';
 import Loader from '../components/Loader';
 import toast, { ToastBar } from 'react-hot-toast';
 import { useState } from 'react';
+import useUserInfo from '../hooks/UseUserInfo';
 
 const MyAssets = () => {
 
@@ -14,10 +15,22 @@ const MyAssets = () => {
 
     const [assetType, setAssetType] = useState('All')
 
-    const { data: assignedAssets = [], refetch, isLoading } = useQuery({
-        queryKey: ['assigned-assets', searchAsset],
+    const { email } = useUserInfo()
+
+    const { data: assignedAssetsPerEmployee = [] } = useQuery({
+        queryKey: ['assigned-assets-email', email],
+        enabled: !!email,
         queryFn: async () => {
-            const result = await axiosInstanceSecure.get(`/assigned-assets?searchAsset=${searchAsset}`)
+            const result = await axiosInstanceSecure.get(`/assigned-assets?employeeEmail=${email}`)
+            return result?.data
+        }
+    })
+
+    const { data: assignedAssetsPerSearch = [], refetch, isLoading } = useQuery({
+        queryKey: ['assigned-assets-search', email, searchAsset],
+        enabled: !!email,
+        queryFn: async () => {
+            const result = await axiosInstanceSecure.get(`/assigned-assets?employeeEmail=${email}&searchAsset=${searchAsset}`)
             return result?.data
         }
     })
@@ -25,11 +38,11 @@ const MyAssets = () => {
     let filteredAssets = [];
 
     if (assetType !== 'All') {
-        filteredAssets = assignedAssets.filter(assignedAsset => assignedAsset?.assetType === assetType)
+        filteredAssets = assignedAssetsPerSearch.filter(assignedAsset => assignedAsset?.assetType === assetType)
     }
 
     else {
-        filteredAssets = [...assignedAssets]
+        filteredAssets = [...assignedAssetsPerSearch]
     }
 
     const { loader, startLoading, stopLoading } = useLoader()
@@ -41,7 +54,7 @@ const MyAssets = () => {
             status: 'active'
         }
 
-        axiosInstanceSecure.patch(`/affiliations?employeeEmail=${assignedAsset?.requesterEmail}&companyName=${assignedAsset?.companyName}`, updatedStatus)
+        axiosInstanceSecure.patch(`/affiliations?employeeEmail=${assignedAsset?.employeeEmail}&companyName=${assignedAsset?.companyName}`, updatedStatus)
             .then(res => {
                 console.log(res?.data)
 
@@ -49,7 +62,7 @@ const MyAssets = () => {
                     requestStatus: 'returned'
                 }
 
-                axiosInstanceSecure.patch(`/requests?assetId=${assignedAsset?.assetId}&requesterEmail=${assignedAsset?.employeeEmail}`, updatedRequestStatus)
+                axiosInstanceSecure.patch(`/employee/requests?assetId=${assignedAsset?.assetId}&requesterEmail=${assignedAsset?.employeeEmail}`, updatedRequestStatus)
                     .then(res => {
                         console.log(res?.data)
 
@@ -89,75 +102,78 @@ const MyAssets = () => {
     return (
         <div>
             <h1 className='text-3xl font-semibold text-gray-800 tracking-tight text-center mb-6'>My Assets</h1>
-            {filteredAssets.length > 0 ? <p className='text-2xl font-bold mb-6 text-center text-gray-600'>Total Assets: {filteredAssets?.length}</p>
+            {assignedAssetsPerEmployee?.length > 0 ? <p className='text-2xl font-bold mb-6 text-center text-gray-600'>Total Assets: {assignedAssetsPerEmployee?.length}</p>
                 : <h1 className='text-2xl font-bold mb-6 text-center text-gray-600'>No assets assigned yet</h1>}
 
-            <div className='flex justify-between items-center mb-6 px-6'>
-                <input type="text" placeholder='Search assets...' className='input input-bordered w-[320px]' onChange={(event) => setSearchAsset(event.target.value)} />
+            {assignedAssetsPerEmployee?.length > 0 && <div className='flex flex-col md:flex-row justify-between items-center mb-6 lg:px-8 md:px-6 px-4 gap-4'>
+                <input type="text" placeholder='Search assets...' className='input input-bordered w-full lg:flex-1' onChange={(event) => setSearchAsset(event.target.value)} />
 
-                <select className='select select-bordered w-[180px]' defaultValue='All' onChange={(event) => setAssetType(event.target.value)}>
-                    <option value="All">All</option>
-                    <option value="Returnable" >Returnable</option>
-                    <option value="Non-returnable" >Non-returnable</option>
+                <select className='select select-bordered w-[180px] hover:cursor-pointer' defaultValue='All' onChange={(event) => setAssetType(event.target.value)}>
+                    <option value="All" className='w-52'>All</option>
+                    <option value="Returnable" className='w-52'>Returnable</option>
+                    <option value="Non-returnable" className='w-52'>Non-returnable</option>
                 </select>
-            </div>
+            </div>}
 
-            <div className="shadow-sm">
-                {filteredAssets.length > 0 && <table className="table text-center border-t border-gray-300 rounded-none">
-                    {/* head */}
-                    <thead className='bg-gray-100 text-gray-600'>
-                        <tr>
-                            <th>Asset Image</th>
-                            <th>Asset Name</th>
-                            <th>Asset Type</th>
-                            <th>Company Name</th>
-                            <th>Request Date</th>
-                            <th>Approval Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {isLoading ? <Loader></Loader> : filteredAssets.map(assignedAsset =>
-                            <tr key={assignedAsset?._id} className='hover:bg-white'>
-                                <td>
-                                    <img
-                                        src={assignedAsset?.assetImage}
-                                        alt="Product Image"
-                                        className="mask mask-squircle h-12 w-12" />
-                                </td>
-                                <td className='font-medium'>{assignedAsset?.assetName}</td>
-                                <td className={`badge text-[12px] font-semibold ${assignedAsset?.assetType === 'Returnable' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                                    {assignedAsset?.assetType}</td>
-
-                                <td>{assignedAsset?.companyName}</td>
-                                <td className='text-gray-600'>{assignedAsset?.returnDate ? new Date(assignedAsset?.returnDate).toLocaleDateString() : 'Pending'}</td>
-                                <td className='text-gray-600'>{new Date(assignedAsset?.assignmentDate).toLocaleDateString()}</td>
-                                <td><span className={`badge text-[12px] font-semibold ${assignedAsset?.status === 'assigned' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                    {assignedAsset?.status}</span></td>
-                                <td className='flex gap-3 justify-center items-center py-6'>
-                                    {assignedAsset?.status === 'returned' ? <span className='badge text-[12px] font-semibold bg-green-100 text-green-700'>Returned</span> : assignedAsset?.assetType === 'Returnable' ? <button className="btn btn-sm btn-outline" onClick={() => document.getElementById(`modal_return_${assignedAsset?._id}`).showModal()}>Return</button> : <span className='text-gray-400 text-sm py-1'>No Actions</span>}
-                                    {/* Open the modal using document.getElementById('ID').showModal() method */}
-                                    {/* Open the modal using document.getElementById('ID').showModal() method */}
-                                    <dialog id={`modal_return_${assignedAsset?._id}`} className="modal modal-bottom sm:modal-middle">
-                                        <div className="modal-box">
-                                            <p className="py-4 text-left">Are you sure you want to return this asset?</p>
-                                            <div className="modal-action">
-                                                <form method="dialog" className='flex gap-3'>
-                                                    {/* if there is a button in form, it will close the modal */}
-                                                    <button className="btn btn-sm btn-outline" onClick={() => handleReturnAsset(assignedAsset?._id, assignedAsset)}>Return</button>
-                                                    <button className="btn btn-sm btn-outline">Cancel</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </dialog>
-                                </td>
+            {filteredAssets.length > 0 &&
+                <div className="shadow-sm overflow-x-auto">
+                    <table className="table text-center border-t border-gray-300 rounded-none">
+                        {/* head */}
+                        <thead className='bg-gray-100 text-gray-600'>
+                            <tr>
+                                <th>Asset Image</th>
+                                <th>Asset Name</th>
+                                <th>Asset Type</th>
+                                <th>Company Name</th>
+                                <th>Request Date</th>
+                                <th>Approval Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>}
-            </div>
-        </div>
+                        </thead>
+                        <tbody>
+                            {isLoading ? <Loader></Loader> : filteredAssets.map(assignedAsset =>
+                                <tr key={assignedAsset?._id} className='hover:bg-white'>
+                                    <td>
+                                        <img
+                                            src={assignedAsset?.assetImage}
+                                            alt="Product Image"
+                                            className="mask mask-squircle h-12 w-12" />
+                                    </td>
+                                    <td className='font-medium'>{assignedAsset?.assetName}</td>
+
+                                    <td className='min-w-[120px]'><span className={`badge text-[12px] font-semibold whitespace-nowrap ${assignedAsset?.assetType === 'Returnable' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                        {assignedAsset?.assetType}</span></td>
+
+                                    <td>{assignedAsset?.companyName}</td>
+                                    <td className='text-gray-600'>{assignedAsset?.returnDate ? new Date(assignedAsset?.returnDate).toLocaleDateString() : 'Pending'}</td>
+                                    <td className='text-gray-600'>{new Date(assignedAsset?.assignmentDate).toLocaleDateString()}</td>
+                                    <td><span className={`badge text-[12px] font-semibold ${assignedAsset?.status === 'assigned' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                                        {assignedAsset?.status}</span></td>
+                                    <td className='flex gap-3 justify-center items-center py-6'>
+                                        {assignedAsset?.status === 'returned' ? <span className='badge text-[12px] font-semibold bg-green-100 text-green-700'>Returned</span> : assignedAsset?.assetType === 'Returnable' ? <button className="btn btn-sm btn-outline" onClick={() => document.getElementById(`modal_return_${assignedAsset?._id}`).showModal()}>Return</button> : <span className='text-gray-400 text-sm py-1 whitespace-nowrap'>No Actions</span>}
+                                        {/* Open the modal using document.getElementById('ID').showModal() method */}
+                                        {/* Open the modal using document.getElementById('ID').showModal() method */}
+                                        <dialog id={`modal_return_${assignedAsset?._id}`} className="modal modal-bottom sm:modal-middle">
+                                            <div className="modal-box">
+                                                <p className="py-4 text-left">Are you sure you want to return this asset?</p>
+                                                <div className="modal-action">
+                                                    <form method="dialog" className='flex gap-3'>
+                                                        {/* if there is a button in form, it will close the modal */}
+                                                        <button className="btn btn-sm btn-outline" onClick={() => handleReturnAsset(assignedAsset?._id, assignedAsset)}>Return</button>
+                                                        <button className="btn btn-sm btn-outline">Cancel</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </dialog>
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>}
+
+        </div >
     );
 };
 

@@ -1,31 +1,27 @@
 import { CircleUserRound, Clipboard, ClipboardList, ClipboardPlus, House, PackageCheck, PackagePlus, PanelLeftClose, PanelLeftOpen, PieChart, Sparkles, User, Users } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import useUserInfo from '../hooks/UseUserInfo';
-import useLoader from '../hooks/UseLoader';
-import Loader from '../components/Loader';
 import { Toaster } from 'react-hot-toast';
-import { useEffect } from 'react';
 
 const DashboardLayout = () => {
+
     const [sidebar, openSidebar] = useState(false);
 
-    const { role, isLoading } = useUserInfo();
+    const { role } = useUserInfo();
     console.log(role)
-
-    const { loader, startLoading, stopLoading } = useLoader();
 
     const location = useLocation()
 
     console.log(location)
 
     useEffect(() => {
-        startLoading()
-
-        const timer = setTimeout(() => stopLoading(), 700)
-
-        return () => clearTimeout(timer)
-    }, [location?.pathname])
+        const checkbox = document.getElementById('my-drawer-4');
+        if (!checkbox) return;
+        const handleChange = () => openSidebar(checkbox.checked);
+        checkbox.addEventListener('change', handleChange);
+        return () => checkbox.removeEventListener('change', handleChange);
+    }, []);
 
     return (
         <div className="drawer lg:drawer-open">
@@ -43,8 +39,8 @@ const DashboardLayout = () => {
                     </NavLink>
                 </nav>
                 {/* Page content here */}
-                <div className='py-12 bg-linear-to-b from-gray-50 to-gray-200 min-h-screen'>
-                    {isLoading || loader ? <Loader></Loader> : <Outlet></Outlet>}
+                <div className={`py-12 bg-linear-to-b from-gray-50 to-gray-200 min-h-screen`}>
+                    <Outlet></Outlet>
                 </div>
             </div>
 

@@ -11,7 +11,7 @@ const MyEmployee = () => {
 
     const axiosInstanceSecure = useAxiosSecure()
 
-    const { email, subscription } = useUserInfo()
+    const { email, packageLimit } = useUserInfo()
 
     const { data: employeesPerCompany = [], refetch } = useQuery({
         queryKey: ['affiliations', email],
@@ -21,15 +21,15 @@ const MyEmployee = () => {
         }
     })
 
-    const { data: pkg } = useQuery({
-        queryKey: ['packages', subscription],
-        queryFn: async () => {
-            const result = await axiosInstanceSecure.get(`/packages?name=${subscription}`)
-            return result?.data
-        }
-    })
+    // const { data: pkg } = useQuery({
+    // queryKey: ['packages', subscription],
+    // queryFn: async () => {
+    // const result = await axiosInstanceSecure.get(`/packages?name=${subscription}`)
+    // return result?.data
+    // }
+    // })
 
-    console.log(pkg)
+    // console.log(pkg)
 
     const { data: users = [], isLoading } = useQuery({
         queryKey: ['users'],
@@ -75,7 +75,7 @@ const MyEmployee = () => {
             })
     }
 
-    if (employeesPerCompany.length > pkg?.employeeLimit) {
+    if (employeesPerCompany.length > packageLimit) {
         return <Navigate to='/dashboard/upgrade-package'></Navigate>
     }
 
@@ -84,10 +84,10 @@ const MyEmployee = () => {
     return (
         <div>
             <h1 className='text-3xl font-semibold text-gray-800 tracking-tight text-center mb-6'>My Employee List</h1>
-            {employeesPerCompany?.length ? <p className='text-2xl font-bold mb-6 text-center text-gray-600'>Employee Count: {employeesPerCompany?.length}/{pkg?.employeeLimit}</p>
+            {employeesPerCompany?.length ? <p className='text-2xl font-bold mb-6 text-center text-gray-600'>Employee Count: {employeesPerCompany?.length}/{packageLimit}</p>
                 : <p className='text-2xl font-bold mb-6 text-center text-gray-600'>No employees added yet</p>}
-            <div className="shadow-sm">
-                {assignedEmployees.length > 0 && <table className="table text-center border-t border-gray-300 rounded-none">
+            <div className="shadow-sm overflow-x-auto w-full">
+                {assignedEmployees.length > 0 && <table className="table text-center border-t border-gray-300 rounded-none w-full">
                     {/* head */}
                     <thead className='bg-gray-100 text-gray-600'>
                         <tr>
@@ -99,42 +99,42 @@ const MyEmployee = () => {
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className='w-full'>
                         {isLoading ? <Loader></Loader> : assignedEmployees.map(assignedEmployee =>
-                            <tr key={assignedEmployee?._id} className='hover:bg-white'>
+                            <tr key={assignedEmployee?._id} className='hover:bg-auto lg:hover:bg-white w-full lg-w-auto'>
                                 <td>
                                     <img
                                         src={assignedEmployee?.profileImage}
                                         alt="Product Image"
                                         className="mask mask-squircle h-12 w-12" />
                                 </td>
-                                <td className='font-medium'>{assignedEmployee?.name}</td>
-
-                                {/* <td className={`badge text-[12px] font-semibold ${assignedEmployee?.productType === 'Returnable' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{assignedEmployee?.productType}</td> */}
+                                <td className='font-medium whitespace-nowrap'>{assignedEmployee?.name}</td>
 
                                 <td>
                                     <button className="">{assignedEmployee?.email}</button>
                                 </td>
                                 <td className='text-gray-600'>{new Date(employeesPerCompany.find(employeeEmail => employeeEmail?.employeeEmail === assignedEmployee?.email)?.affiliationDate).toLocaleDateString()}</td>
                                 <td>{assignedAssets.filter(assignedAsset => assignedAsset?.employeeEmail === assignedEmployee?.email)?.length}</td>
-                                <td className='flex gap-3 justify-center items-center py-6'>
+                                <td className='flex gap-3 justify-center items-center py-6 min-w-[150px]'>
 
                                     <button className="btn btn-sm btn-error text-white" onClick={() => document.getElementById(`modal_remove_${assignedEmployee?._id}`).showModal()}>Remove from Team</button>
-                                    {/* Open the modal using document.getElementById('ID').showModal() method */}
-                                    {/* Open the modal using document.getElementById('ID').showModal() method */}
-                                    <dialog id={`modal_remove_${assignedEmployee?._id}`} className="modal modal-bottom sm:modal-middle">
-                                        <div className="modal-box">
-                                            <p className="py-4 text-left">Are you sure you want to remove this employee?</p>
-                                            <div className="modal-action">
-                                                <form method="dialog" className='flex gap-3'>
-                                                    {/* if there is a button in form, it will close the modal */}
-                                                    <button className="btn btn-sm btn-error text-white" onClick={() => handleRemoveEmployee(assignedEmployee?.email)}>Remove</button>
-                                                    <button className="btn btn-sm btn-outline">Cancel</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </dialog>
                                 </td>
+
+                                {/* Open the modal using document.getElementById('ID').showModal() method */}
+                                {/* Open the modal using document.getElementById('ID').showModal() method */}
+                                <dialog id={`modal_remove_${assignedEmployee?._id}`} className="modal modal-bottom sm:modal-middle">
+                                    <div className="modal-box">
+                                        <p className="py-4 text-left">Are you sure you want to remove this employee?</p>
+                                        <div className="modal-action">
+                                            <form method="dialog" className='flex gap-3'>
+                                                {/* if there is a button in form, it will close the modal */}
+                                                <button className="btn btn-sm btn-error text-white" onClick={() => handleRemoveEmployee(assignedEmployee?.
+                                                    email)}>Remove</button>
+                                                <button className="btn btn-sm btn-outline">Cancel</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </dialog>
                             </tr>
                         )}
                     </tbody>

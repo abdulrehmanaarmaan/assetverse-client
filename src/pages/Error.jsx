@@ -1,17 +1,31 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Toaster } from 'react-hot-toast';
 
 const Error = () => {
-    console.log(useLocation())
+
+    const location = useLocation()
+
+    const navigate = useNavigate();
+
+    const handleGoBack = () => {
+
+        if (window.history.length) {
+            navigate(-1)
+        }
+
+        else {
+            navigate('/')
+        }
+    }
+
     return (
         <div>
             <Navbar></Navbar>
-            <div className={`${location?.pathname === '/' ? 'pt-12' : 'py-12'} bg-linear-to-b from-gray-50 to-gray-200 min-h-screen`}>
+            <div className='py-12 bg-linear-to-b from-gray-50 to-gray-200 flex items-center justify-center min-h-[60vh]'>
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -26,13 +40,12 @@ const Error = () => {
                     <Link
                         to="/dashboard"
                         className="inline-block px-6 py-3 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-400 transition-colors font-semibold"
-                    >
-                        Go Back to Dashboard
+                        onClick={handleGoBack}>
+                        Go Back
                     </Link>
                 </motion.div>
             </div>
             <Footer></Footer>
-            <Toaster></Toaster>
         </div>
     );
 };

@@ -10,7 +10,7 @@ const UpgradeCancelled = () => {
 
                     <XCircle className="mx-auto text-red-500 w-14 h-14 mb-4" />
 
-                    <h1 className="text-2xl font-semibold text-gray-800">
+                    <h1 className="text-xl md:text-2xl font-semibold text-gray-800">
                         Payment Cancelled
                     </h1>
 
@@ -22,7 +22,7 @@ const UpgradeCancelled = () => {
                         You can retry upgrading your package or return to your dashboard.
                     </p>
 
-                    <div className="mt-6 flex gap-3 justify-center">
+                    <div className="mt-6 flex flex-col md:flex-row gap-3 justify-center">
                         <NavLink
                             to="/dashboard/upgrade-package"
                             className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-400 transition font-semibold"
@@ -33,9 +33,7 @@ const UpgradeCancelled = () => {
                         <NavLink
                             to="/dashboard/asset-list"
                             className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition font-semibold"
-                        >
-                            Go to Dashboard
-                        </NavLink>
+                        >View Assets</NavLink>
                     </div>
                 </div>
             </div>

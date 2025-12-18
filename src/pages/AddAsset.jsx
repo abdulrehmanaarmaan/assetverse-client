@@ -69,7 +69,7 @@ const AddAsset = () => {
     if (loader) return <Loader></Loader>
 
     return (
-        <div className="hero">
+        <div className="hero px-4">
             <div className="hero-content flex-col p-0">
                 <div>
                     <h1 className='text-3xl font-semibold text-gray-800 tracking-tight text-center mb-6 mt-0'>Add a New Asset</h1>

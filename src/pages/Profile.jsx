@@ -159,7 +159,7 @@ const Profile = () => {
     if (loader) return <Loader></Loader>
 
     return (
-        <div className='px-5'>
+        <div className='px-4'>
             <h1 className='text-3xl font-semibold text-gray-800 tracking-tight mb-6 text-center'>My Profile</h1>
             <div className="hero">
                 <div className="card bg-base-100 shrink-0 border border-gray-300">
@@ -177,7 +177,7 @@ const Profile = () => {
                                 <div>
                                     <label className="label mb-1">Profile Photo</label>
                                     <input type="file" accept="image/*" className="file-input block rounded-lg w-full" {...register('profileImage')} />
-                                    <img src={profileImage} alt="" className='max-w-6 rounded-full mt-3' />
+                                    <img src={profileImage} alt="" className='w-6 h-6 rounded-full mt-3' />
                                 </div>
                             </fieldset>
                             {Object.values(errors).some(err => err.type === 'required') && <p
@@ -193,16 +193,16 @@ const Profile = () => {
             {affiliationsPerEmployee.length === 0 ?
                 <p className="text-gray-500 text-center">You are not affiliated with any company.</p>
                 :
-                <div className="card bg-base-100 border shadow-md border-gray-300">
+                <div className="card bg-base-100 border shadow-md border-gray-300 max-w-3xl mx-auto">
                     <div className="card-body space-y-3">
                         {isLoading ? <Loader></Loader> : affiliationsPerEmployee.map(affiliation => (
                             <div
                                 key={affiliation?._id}
-                                className="p-4 border rounded-lg bg-gray-50 flex justify-between items-center shadow-sm"
+                                className="p-4 border border-gray-300 rounded-lg bg-gray-50 flex justify-between items-center shadow-sm flex-col md:flex-row"
                             >
-                                <img src={affiliation?.companyLogo} alt={affiliation?.companyLogo} className='w-12 h-12 rounded-full object-cover' referrerPolicy='no-referrer' />
+                                <img src={affiliation?.companyLogo} alt={affiliation?.companyLogo} className='w-24 md:w-12 rounded-full object-cover mb-4 md:mb-0' referrerPolicy='no-referrer' />
 
-                                <div>
+                                <div className='md:text-left text-center'>
                                     <p className="font-semibold">{affiliation?.companyName}</p>
                                     <p className="text-gray-600 text-sm">HR: {affiliation?.hrEmail}</p>
                                 </div>

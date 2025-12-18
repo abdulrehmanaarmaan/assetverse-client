@@ -4,11 +4,10 @@ import useAxiosSecure from '../hooks/UseAxiosSecure';
 // import { AuthContext } from '../contexts/AuthContext';
 import useUserInfo from '../hooks/UseUserInfo';
 import { useQuery } from '@tanstack/react-query';
-// import { useSearchParams } from 'react-router';
 import useAxios from '../hooks/UseAxios';
 import Loader from '../components/Loader';
 import useLoader from '../hooks/UseLoader';
-// import useLoader from '../hooks/UseLoader';
+import { useState } from 'react';
 
 const UpgradePackage = () => {
 
@@ -16,22 +15,25 @@ const UpgradePackage = () => {
 
     const axiosInstanceSecure = useAxiosSecure()
 
+    const axiosInstance = useAxios();
+
     const { data: packages = [], isLoading } = useQuery({
         queryKey: ['packages'],
         queryFn: async () => {
-            const result = await axiosInstanceSecure.get('/packages');
+            const result = await axiosInstance.get('/packages');
             return result?.data
         }
     })
 
-    // const { loader, startLoading, stopLoading } = useLoader()
+    const { email } = useUserInfo()
 
-    const { email, subscription } = useUserInfo()
-
-    const axiosInstance = useAxios();
+    const [upgradingPackageId, setUpgradingPackageId] = useState(null)
 
     const handlePayment = (pkg) => {
+        if (upgradingPackageId) return;
+
         startLoading()
+        setUpgradingPackageId(pkg?._id)
 
         const payment = {
             hrEmail: email,
@@ -44,11 +46,11 @@ const UpgradePackage = () => {
 
         console.log(payment)
 
-        axiosInstance.post('/create-checkout-session', payment)
+        axiosInstanceSecure.post('/create-checkout-session', payment)
             .then(res => {
                 console.log(res)
-                stopLoading()
                 window.location.href = res?.data?.url
+                stopLoading()
             })
             .catch(err => {
                 console.log(err)
@@ -78,72 +80,80 @@ const UpgradePackage = () => {
         }
     })
 
-    const currentPlan = packages.find(
-        pkg => pkg?.name.toLowerCase() === subscription.toLowerCase()
-    );
+    const paymentsPerHR = paymentHistory.filter(payment => payment?.hrEmail === email)
+
+    const paymentsPackages = paymentsPerHR.map(payment => payment?.packageName)
+
+    const lastUpgradedPackage = paymentsPackages[0]
+
+    const latestEmployeeLimit = packages.find(pkg => pkg?.name === lastUpgradedPackage)?.employeeLimit
+
+    // const currentPlan = packages.find(
+    // pkg => pkg?.name.toLowerCase() === subscription.toLowerCase()
+    // );
 
     if (loader) return <Loader></Loader>
 
     return (
         <div>
             <div className="">
+                <div className="px-4 md:px-6 lg:px-8">
+                    {/* ------------------ Title ------------------ */}
+                    <div className="mb-6">
+                        <h1 className=" text-3xl font-semibold text-gray-800 tracking-tight text-center mb-6">Upgrade Package</h1>
+                        <p className="text-2xl font-bold mb-6 text-center text-gray-600">
+                            Choose a plan that scales with your company
+                        </p>
+                    </div>
 
-                {/* ------------------ Title ------------------ */}
-                <div className="mb-6">
-                    <h1 className=" text-3xl font-semibold text-gray-800 tracking-tight text-center mb-6">Upgrade Package</h1>
-                    <p className="text-2xl font-bold mb-6 text-center text-gray-600">
-                        Select a package that fits your company’s needs
-                    </p>
-                </div>
+                    {/* ------------------ Current Plan ------------------ */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-8 text-center md:text-left">
+                        <h2 className="text-xl font-semibold text-blue-900">
+                            Current Package: {lastUpgradedPackage || "Basic"}
+                        </h2>
+                        <p className="text-blue-700">
+                            Employee Limit: {latestEmployeeLimit || 5}
+                        </p>
+                    </div>
 
-                {/* ------------------ Current Plan ------------------ */}
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-8">
-                    <h2 className="text-xl font-semibold text-blue-900">
-                        Current Package: {currentPlan?.name || "No Package Active"}
-                    </h2>
-                    <p className="text-blue-700">
-                        Employee Limit: {currentPlan?.employeeLimit || 0}
-                    </p>
-                </div>
-
-                {/* ------------------ Plans List ------------------ */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {isLoading ? <Loader></Loader> : packages.map((pkg, index) => (
-                        <div
-                            key={index}
-                            className="bg-white border rounded-2xl shadow hover:shadow-xl p-6 flex flex-col border-gray-300"
-                        >
-                            <h3 className="text-2xl font-bold text-gray-800">{pkg?.name}</h3>
-
-                            <p className="text-4xl font-extrabold mt-3">
-                                ${pkg?.price}
-                                <span className="text-gray-500 text-base">/month</span>
-                            </p>
-
-                            <p className="text-gray-500 mt-1">
-                                Up to {pkg?.employeeLimit} employees
-                            </p>
-
-                            <ul className="mt-5 space-y-2 text-gray-700">
-                                {isLoading ? <Loader></Loader> : pkg?.features?.map((f, i) => (
-                                    <li key={i} className="flex gap-2">
-                                        <span className="text-green-600">✓</span> {f}
-                                    </li>
-                                ))}
-                            </ul>
-
-                            <button
-                                onClick={() => handlePayment(pkg)}
-                                disabled={currentPlan?.name === pkg?.name}
-                                className={`mt-6 py-3 rounded-lg font-semibold transition ${currentPlan?.name === pkg.name
-                                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                                    : "bg-blue-500 text-white hover:bg-blue-400 hover:cursor-pointer"
-                                    }`}
+                    {/* ------------------ Plans List ------------------ */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {isLoading ? <Loader></Loader> : packages.map((pkg, index) => (
+                            <div
+                                key={index}
+                                className="bg-white border rounded-2xl shadow hover:shadow-xl p-6 flex flex-col border-gray-300"
                             >
-                                {currentPlan?.name === pkg?.name ? "Current Plan" : "Upgrade"}
-                            </button>
-                        </div>
-                    ))}
+                                <h3 className="text-2xl font-bold text-gray-800">{pkg?.name} {pkg?.name === 'Basic' && <span className='text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600'>Default</span>}</h3>
+
+                                <p className="text-4xl font-extrabold mt-3">
+                                    ${pkg?.price}
+                                    <span className="text-gray-500 text-base">/month</span>
+                                </p>
+
+                                <p className="text-gray-500 mt-1">
+                                    Up to {pkg?.name === 'Basic' ? 5 : pkg?.name === 'Standard' ? 10 : 20} employees
+                                </p>
+
+                                <ul className="mt-5 space-y-2 text-gray-700 mb-6">
+                                    {isLoading ? <Loader></Loader> : pkg?.features?.map((f, i) => (
+                                        <li key={i} className="flex gap-2">
+                                            <span className="text-green-600">✓</span> {f}
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                <button
+                                    onClick={() => handlePayment(pkg)}
+                                    disabled={upgradingPackageId === pkg?._id || paymentsPackages.includes(pkg?.name) || pkg?.name === 'Basic'}
+                                    className={`mt-auto py-3 rounded-lg font-semibold transition ${paymentsPackages.includes(pkg?.name) || pkg?.name === 'Basic'
+                                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                        : "bg-blue-500 text-white hover:bg-blue-400 hover:cursor-pointer"
+                                        }`}>
+                                    {upgradingPackageId === pkg?._id ? 'Redirecting...' : paymentsPackages.includes(pkg?.name) ? "Already Upgraded" : pkg?.name === 'Basic' ? "Current Plan" : "Upgrade"}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* ------------------ Payment History ------------------ */}

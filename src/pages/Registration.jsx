@@ -78,7 +78,7 @@ const Registration = () => {
                                     .catch(err => {
                                         console.log(err)
                                         stopLoading()
-                                        toast.erro('Failed to register')
+                                        toast.error('Failed to register')
                                     })
                             })
                             .catch(err => {
@@ -171,12 +171,12 @@ const Registration = () => {
 
     useEffect(() => {
         reset({
-            role: role === 'employee' ? 'employee' : 'hr',
             email: '',
             name: '',
             password: '',
             profileImage: '',
             dateOfBirth: '',
+            role: role === 'employee' ? 'employee' : 'hr'
         })
     }, [reset, role])
 
@@ -184,7 +184,7 @@ const Registration = () => {
 
     if (role === 'employee') {
         return (
-            <div className="hero">
+            <div className="hero px-4">
                 <div className="hero-content flex-col p-0">
                     <div>
                         <h1 className='text-3xl font-semibold text-gray-800 tracking-tight text-center mb-6'>Create an Employee Account</h1>
@@ -192,32 +192,32 @@ const Registration = () => {
                     <div className="card bg-base-100 w-full shrink-0 border border-gray-300">
                         <div className="card-body">
                             <form onSubmit={handleSubmit(handleEmployeeRegistration)}>
-                                <fieldset className="fieldset grid-cols-2 gap-4">
+                                <fieldset className="fieldset grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="label mb-1">Email</label>
-                                        <input type="email" className="input rounded-lg" placeholder="Email" {...register('email', { required: true })} />
+                                        <input type="email" className="input rounded-lg w-full" placeholder="Email" {...register('email', { required: true })} />
                                     </div>
                                     <div>
                                         <label className="label mb-1">Password</label>
-                                        <input type="password" className="input rounded-lg" placeholder="Password" {...register('password', { required: true, pattern: { value: /^.{6,}$/, message: 'Password must include at least 6 characters.' } })} />
+                                        <input type="password" className="input rounded-lg w-full" placeholder="Password" {...register('password', { required: true, pattern: { value: /^.{6,}$/, message: 'Password must include at least 6 characters.' } })} />
                                         {errors.password && <p className='text-red-500 mt-2'>{errors.password.
                                             message}</p>}
                                     </div>
                                     <div>
                                         <label className="label mb-1">Name</label>
-                                        <input type="text" className="input rounded-lg" placeholder="Name" {...register('name', { required: true })} />
+                                        <input type="text" className="input rounded-lg w-full" placeholder="Name" {...register('name', { required: true })} />
                                     </div>
                                     <div>
                                         <label className="label mb-1">Profile Image</label>
-                                        <input type="file" accept="image/*" className="file-input block rounded-lg" {...register('profileImage', { required: true })} />
+                                        <input type="file" accept="image/*" className="file-input block rounded-lg w-full" {...register('profileImage', { required: true })} />
                                     </div>
                                     <div>
                                         <label className="label mb-1">Date of Birth</label>
-                                        <input type="date" className="input rounded-lg" {...register('dateOfBirth', { required: true })} />
+                                        <input type="date" className="input rounded-lg w-full" {...register('dateOfBirth', { required: true })} />
                                     </div>
                                     <div>
                                         <label className="label mb-1">Role</label>
-                                        <input type="text" className="input rounded-lg cursor-not-allowed" placeholder="Role" {...register('role')} readOnly />
+                                        <input type="text" className="input rounded-lg cursor-not-allowed w-full" placeholder="Role" {...register('role')} readOnly />
                                     </div>
                                 </fieldset>
                                 {Object.values(errors).some(err => err.type === 'required') && <p className='text-red-500 mt-2'>All fields are required.</p>}
@@ -234,7 +234,7 @@ const Registration = () => {
 
     if (role === 'hr-manager') {
         return (
-            <div className="hero">
+            <div className="hero px-4">
                 <div className="hero-content flex-col p-0">
                     <div>
                         <h1 className='text-3xl font-semibold text-gray-800 tracking-tight text-center mb-6'>Create a HR Manager Account</h1>
@@ -242,14 +242,14 @@ const Registration = () => {
                     <div className="card bg-base-100 w-full shrink-0 border border-gray-300">
                         <div className="card-body">
                             <form onSubmit={handleSubmit(handleManagerRegistration)}>
-                                <fieldset className="fieldset grid-cols-2 gap-4">
+                                <fieldset className="fieldset grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="label mb-1">Email</label>
-                                        <input type="email" className="input rounded-lg" placeholder="Email" {...register('email', { required: true })} />
+                                        <input type="email" className="input rounded-lg w-full" placeholder="Email" {...register('email', { required: true })} />
                                     </div>
                                     <div>
                                         <label className="label mb-1">Password</label>
-                                        <input type="password" className="input rounded-lg" placeholder="Password" {...
+                                        <input type="password" className="input rounded-lg w-full" placeholder="Password" {...
                                             register('password', {
                                                 required: true, pattern: {
                                                     value: /^.{6,}$/,
@@ -261,61 +261,61 @@ const Registration = () => {
                                     </div>
                                     <div>
                                         <label className="label mb-1">Name</label>
-                                        <input type="text" className="input rounded-lg" placeholder="Name" {...register('name', { required: true })} />
+                                        <input type="text" className="input rounded-lg w-full" placeholder="Name" {...register('name', { required: true })} />
                                     </div>
                                     <div>
                                         <label className="label mb-1">Profile Image</label>
-                                        <input type="file" accept="image/*" className="file-input block rounded-lg" {...
+                                        <input type="file" accept="image/*" className="file-input block rounded-lg w-full" {...
                                             register('profileImage', { required: true })} />
                                     </div>
                                     <div>
                                         <label className="label mb-1">Company Name</label>
-                                        <input defaultValue='' type="text" className="input rounded-lg" placeholder="Company Name" {...
+                                        <input defaultValue='' type="text" className="input rounded-lg w-full" placeholder="Company Name" {...
                                             register('companyName', { required: true })} />
                                     </div>
                                     <div>
                                         <label className="label mb-1">Company Logo</label>
-                                        <input type="file" accept="image/*" className="file-input block rounded-lg" {...
+                                        <input type="file" accept="image/*" className="file-input block rounded-lg w-full" {...
                                             register('companyLogo', { required: true })} />
                                     </div>
                                     <div>
                                         <label className="label mb-1">Date of Birth</label>
-                                        <input type="date" className="input rounded-lg" {...register('dateOfBirth', {
+                                        <input type="date" className="input rounded-lg w-full" {...register('dateOfBirth', {
                                             required: true
                                         })} />
                                     </div>
                                     <div>
                                         <label className="label mb-1">Role</label>
-                                        <input type="text" className="input rounded-lg cursor-not-allowed" placeholder="Role" {...register('role')} readOnly />
+                                        <input type="text" className="input rounded-lg cursor-not-allowed w-full" placeholder="Role" {...register('role')} readOnly />
                                     </div>
                                     <div>
                                         <label className="label mb-1">Package Limit</label>
-                                        <input type="text" className="input rounded-lg" placeholder="Package Limit" {...
+                                        <input type="text" className="input rounded-lg cursor-not-allowed w-full" placeholder="Package Limit" {...
                                             register('packageLimit', {
                                                 required: true, pattern: {
                                                     value: /^[0-9]+$/, message: 'Please type only an integer.'
                                                 }
-                                            })} />
+                                            })} defaultValue={5} readOnly />
                                         {errors.packageLimit && <p className='text-red-500 mt-2'>{errors.
                                             packageLimit.
                                             message}</p>}
                                     </div>
                                     <div>
                                         <label className="label mb-1">Current Employees</label>
-                                        <input type="text" className="input rounded-lg" placeholder="Current Employees"
+                                        <input type="text" className="input rounded-lg cursor-not-allowed w-full" placeholder="Current Employees"
                                             {...register('currentEmployees', {
                                                 required: true, pattern: {
                                                     value: /^[0-9]+$/, message: 'Please type only an integer.'
                                                 }
-                                            })} />
+                                            })} defaultValue={0} readOnly />
                                         {errors.currentEmployees && <p className='text-red-500 mt-2'>{errors.
                                             currentEmployees.
                                             message}</p>}
                                     </div>
                                     <div>
                                         <label className="label mb-1">Subscription</label>
-                                        <input type="text" className="input rounded-lg" placeholder="Subscription" {...
-                                            register('subscription', { required: true })} defaultValue={'basic'} />
+                                        <input type="text" className="input rounded-lg cursor-not-allowed w-full" placeholder="Subscription" {...
+                                            register('subscription', { required: true })} defaultValue={'basic'} readOnly />
                                     </div>
                                 </fieldset>
                                 {Object.values(errors).some(err => err.type === 'required') && <p className='text-red-500 mt-2'>All

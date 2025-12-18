@@ -47,7 +47,6 @@ const router = createBrowserRouter([
     {
         path: '/dashboard',
         Component: DashboardLayout,
-        errorElement: <DashboardError></DashboardError>,
         children: [
             {
                 index: true,
@@ -97,6 +96,10 @@ const router = createBrowserRouter([
             {
                 path: 'profile',
                 element: <PrivateRoute><EmployeeRoute><Profile></Profile></EmployeeRoute></PrivateRoute >
+            },
+            {
+                path: '*',
+                element: <DashboardError></DashboardError>
             }
         ]
     }

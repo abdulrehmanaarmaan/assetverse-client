@@ -53,22 +53,25 @@ const MyTeam = () => {
 
     return (
         <div>
-            <div className="max-w-7xl mx-auto px-6">
+            <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
                 {/* Page Title */}
                 <h1 className="text-3xl font-semibold text-gray-800 tracking-tight mb-6 text-center">My Team</h1>
                 {/* Company Selection */}
                 <div className="flex justify-center mb-15">
-                    <select
-                        className="select select-bordered px-4 py-2 text-lg"
+                    {hrs.length > 0 ? <select
+                        className="select select-bordered px-4 py-2 text-lg hover:cursor-pointer"
                         onChange={(event) => setSelectedCompany(event.target.value)}
+                        defaultValue='Pick a company'
+                        disabled={isLoading}
                     >
-                        <option value={selectedCompany}>{selectedCompany}</option>
-                        {isLoading ? <Loader></Loader> : hrs.map(hr => (
+                        <option value='Pick a company' disabled>Pick a company</option>
+                        {hrs.map(hr => (
                             <option key={hr?._id} value={hr?.companyName}>
                                 {hr?.companyName}
                             </option>
                         ))}
                     </select>
+                        : <h2 className="text-2xl font-bold text-center text-gray-600">No HRs available yet</h2>}
                 </div>
                 {/* Colleagues List */}
                 {selectedCompany !== 'Pick a company' &&
@@ -90,9 +93,6 @@ const MyTeam = () => {
                                         />
                                         <h3 className="text-lg font-bold">{employee?.name}</h3>
                                         <p className="text-gray-500 text-sm">{employee?.email}</p>
-                                        <p className="text-blue-600 font-medium mt-1">
-                                            {index}
-                                        </p>
                                     </div>
                                 </div>
                             ))}

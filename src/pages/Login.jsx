@@ -23,7 +23,7 @@ const Login = () => {
         console.log(data)
         login(data?.email, data?.password)
             .then(result => {
-                navigate(role === 'hr' ? '/dashboard/asset-list' : '/dashboard/request-asset')
+                navigate(role === 'hr' ? '/dashboard/asset-list' : '/dashboard/request-asset', { replace: true })
                 console.log(result?.user)
                 stopLoading()
                 toast.success('Logged in successfully')
@@ -39,7 +39,7 @@ const Login = () => {
 
     return (
         <div>
-            <div className="hero">
+            <div className="hero px-4">
                 <div className="hero-content flex-col p-0">
                     <div>
                         <h1 className='text-3xl font-semibold text-gray-800 tracking-tight text-center mb-6'>Log in to your account</h1>
