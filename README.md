@@ -16,6 +16,7 @@ https://assignment-11-client-f195a.web.app
 ## Technologies Used
 **Frontend** 
 -React 
+
 -Tailwind CSS
 -TanStack Query 
 -Axios
