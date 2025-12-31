@@ -36,7 +36,5 @@ Client: npm run dev
 Server: nodemon index.js
 
 ## Clone the repositories
-
-https://github.com/abdulrehmanaarmaan/Assignment-11-Client
-
-https://github.com/abdulrehmanaarmaan/Assignment-11-Server
+- https://github.com/abdulrehmanaarmaan/Assignment-11-Client
+- https://github.com/abdulrehmanaarmaan/Assignment-11-Server
