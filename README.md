@@ -15,43 +15,73 @@ https://assignment-11-client-f195a.web.app
 
 ## Technologies Used
 **Frontend** 
+
 -React 
 
 -Tailwind CSS
+
 -TanStack Query 
+
 -Axios
+
 -Recharts
 
 **Backend**
+
 -Node.js
+
 -Express.js
+
 -MongoDB
+
 -Firebase
 
 ## Key Features List
+
 -Role-based authentication for HR and employees
+
 -Asset request and approval workflow
+
 -Employee asset assignment and return management
+
 -Package-based subscription system for HRs
+
 -Real-time dashboard analytics
+
 -Secure private routes
+
 -Responsive UI for mobile
+
 -Tablet, and desktop
+
 -Profile management
+
 -Payment history tracking
+
 -Modern UX with loaders and toasts
 
 ## npm Packages Used 
+
 -react
+
 -react-router-dom
+
 -@tanstack/react-query
+
 -axios, firebase
+
 -react-hot-toast
+
 -react-icons
+
 -lucide-react 
+
 -framer-motion
+
 -recharts
+
 -tailwindcss
+
 -daisyui
 
 ## Setup Instructions
