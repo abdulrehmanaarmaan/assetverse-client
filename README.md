@@ -50,9 +50,7 @@ https://assignment-11-client-f195a.web.app
 
 -Secure private routes
 
--Responsive UI for mobile
-
--Tablet, and desktop
+-Responsive UI for mobile tablet, and desktop
 
 -Profile management
 
