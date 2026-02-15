@@ -21,7 +21,7 @@ const Footer = () => {
                 <div>
                     <h3 className="text-lg font-semibold mb-3">Contact</h3>
                     <p className="text-sm text-gray-600">Email: <a href="mailto:assetverse@yourcompany.com" className="hover:text-gray-900">assetverse@gmail.com</a></p>
-                    <p className="text-sm text-gray-600">Phone: <a href="tel:+8801337910777" className="hover:text-gray-900">+880 1337 910777</a></p>
+                    <p className="text-sm text-gray-600">Phone: <a href="tel:+8801725348534" className="hover:text-gray-900">+880 1725 348534</a></p>
                 </div>
                 {/* Quick Links + Social */}
                 <div>

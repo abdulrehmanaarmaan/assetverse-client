@@ -42,7 +42,7 @@ const Contact = () => {
                         <Phone className="h-10 w-10 mx-auto text-blue-600 mb-4" />
                         <h3 className="font-semibold text-lg mb-2">Phone</h3>
                         <p className="text-gray-600 text-sm">
-                            +880 1337 910777
+                            +880 1725 348534
                         </p>
                     </div>
 
