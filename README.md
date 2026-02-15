@@ -11,7 +11,7 @@ AssetVerse is a corporate asset management web application designed to streamlin
 https://assignment-11-client-f195a.web.app
 
 ### Screenshot
-<img alt="Screenshot 2025-12-31 133622" src="https://github.com/user-attachments/assets/d49c877d-aaea-4784-a8ea-f3eda38aea0b" width='900'/>
+<img alt="Screenshot 2025-12-31 133622" src="https://github.com/user-attachments/assets/af37444a-04eb-4241-a580-b8e59929a611" width='900'/>
 
 ### Technologies Used
 **Frontend** 
@@ -50,9 +50,7 @@ https://assignment-11-client-f195a.web.app
 
 -Secure private routes
 
--Responsive UI for mobile
-
--Tablet, and desktop
+-Responsive UI for mobile, tablet and desktop
 
 -Profile management
 
@@ -100,5 +98,5 @@ Client: npm run dev
 Server: nodemon index.js
 
 ### Clone The Repositories
-- https://github.com/abdulrehmanaarmaan/Assignment-11-Client
-- https://github.com/abdulrehmanaarmaan/Assignment-11-Server
+- https://github.com/abdulrehmanaarmaan/assetverse-client.git
+- https://github.com/abdulrehmanaarmaan/assetverse-server.git
