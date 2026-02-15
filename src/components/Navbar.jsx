@@ -10,6 +10,8 @@ const Navbar = () => {
 
     const { user, logout } = use(AuthContext);
 
+    const { darkMode, setDarkMode } = use(ThemeContext);
+
     const publicLinks = <>
         <NavLink to='/'>Home</NavLink>
         <NavLink to='/about'>About</NavLink>
@@ -19,6 +21,23 @@ const Navbar = () => {
             <NavLink to='/registration/employee'>Join as Employee</NavLink>
             <NavLink to='/registration/hr-manager'>Join as HR Manager</NavLink>
         </>}
+
+        <div className='border border-base-300 my-1 md:hidden'></div>
+
+        <div className="px-3 py-2 hover:bg-base-200 rounded-lg md:hidden transition-all duration-200 hover:text-black">
+            <div className="flex items-center justify-between">
+                <span className="flex items-center gap-2 text-sm font-medium">
+
+                    {darkMode ? <FiSun className="w-4 h-4" /> : <FiMoon className="w-4 h-4" />}
+                    Theme
+                </span>
+                <button onClick={() => setDarkMode(!darkMode)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${darkMode ? "bg-blue-600 cursor-pointer" : "bg-base-300 cursor-pointer"}`} aria-label="Toggle theme">
+
+                    <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-300 ${darkMode ? "translate-x-5" : "translate-x-1"}`}
+                    />
+                </button>
+            </div>
+        </div>
     </>
 
     const handleLogout = () => {
@@ -32,8 +51,6 @@ const Navbar = () => {
     }
 
     const { role } = useUserInfo();
-
-    const { darkMode, setDarkMode } = use(ThemeContext)
 
     return (
         <div className="navbar bg-base-100 border-b border-base-300 px-4 sticky top-0 z-1">
@@ -86,25 +103,6 @@ const Navbar = () => {
                                     <NavLink to='/dashboard/my-team' className='hover:bg-blue-50'>My Team</NavLink>
                                 </>}
                             <NavLink to='/dashboard/profile' className='hover:bg-blue-50'>Profile</NavLink>
-
-                            <div className='border md:border-none my-1 md:hidden'></div>
-
-                            <div className="px-3 py-2 hover:bg-base-200 rounded md:hidden navbar-btn">
-                                <div className="flex items-center justify-between">
-                                    <span className="flex items-center gap-2 text-sm">
-                                        {darkMode ? <FiSun /> : <FiMoon />}
-                                        Theme
-                                    </span>
-
-                                    <input
-                                        type="checkbox"
-                                        className="toggle toggle-sm"
-                                        checked={darkMode}
-                                        onChange={() => setDarkMode(!darkMode)}
-                                        aria-label="Toggle theme"
-                                    />
-                                </div>
-                            </div>
 
                             <div className='border md:border-none my-1 md:hidden'></div>
 
