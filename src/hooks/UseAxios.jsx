@@ -3,7 +3,7 @@ import React from 'react';
 
 const useAxios = () => {
     const axiosInstance = axios.create({
-        baseURL: 'https://assignment-11-server-dun-phi.vercel.app'
+        baseURL: import.meta.env.VITE_API_URL
     })
 
     return axiosInstance
